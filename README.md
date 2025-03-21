@@ -75,6 +75,19 @@ npx @modelcontextprotocol/inspector
 ```
 
 * Confirm that the server is running in your `Cursor Settings/MCP` tab.
+* Best practice is to then update Cursor Global (User) rules.
+* Open Cursor `Settings/Rules` and update `User Rules` with the following (or similar):
+
+```
+for ANY question about LangGraph, use the langgraph-docs-mcp server to help answer -- 
++ call list_doc_sources tool to get the available llms.txt file
++ call fetch_docs tool to read it
++ reflect on the urls in llms.txt 
++ reflect on the input question 
++ call fetch_docs on any urls relevant to the question
++ use this to answer the question
+```
+
 * `CMD+L` (on Mac) to open chat.
 * Ensure `agent` is selected. 
 
@@ -82,14 +95,6 @@ npx @modelcontextprotocol/inspector
 
 Then, try an example prompt, such as:
 ```
-use the langgraph-docs-mcp server to answer any LangGraph questions -- 
-+ call list_doc_sources tool to get the available llms.txt file
-+ call fetch_docs tool to read it
-+ reflect on the urls in llms.txt 
-+ reflect on the input question 
-+ call fetch_docs on any urls relevant to the question
-+ use this to answer the question
-
 what are types of memory in LangGraph?
 ```
 
@@ -103,8 +108,16 @@ what are types of memory in LangGraph?
 
 ![Screenshot 2025-03-19 at 11 02 52 AM](https://github.com/user-attachments/assets/d45b427c-1c1e-4602-820a-7161a310af24)
 
-* `CMD+L` (on Mac) to open Cascade and refresh MCP servers.
-* Available MCP servers will be listed, showing `langgraph-docs-mcp` as connected.
+* Update `Windsurf Rules/Global rules` with the following (or similar):
+
+```
+for ANY question about LangGraph, use the langgraph-docs-mcp server to help answer -- 
++ call list_doc_sources tool to get the available llms.txt file
++ call fetch_docs tool to read it
++ reflect on the urls in llms.txt 
++ reflect on the input question 
++ call fetch_docs on any urls relevant to the question
+```
 
 ![Screenshot 2025-03-18 at 2 02 12 PM](https://github.com/user-attachments/assets/5a29bd6a-ad9a-4c4a-a4d5-262c914c5276)
 
@@ -118,6 +131,19 @@ Then, try the example prompt:
 * Open `Settings/Developer` to update `~/Library/Application\ Support/Claude/claude_desktop_config.json`.
 * Update with `langgraph-docs-mcp` as noted above.
 * Restart Claude Desktop app.
+
+> Note: currently (3/21/25) it appears that Claude Code does not support `rules` for global rules, so appending the following to your prompt.
+
+```
+<rules>
+for ANY question about LangGraph, use the langgraph-docs-mcp server to help answer -- 
++ call list_doc_sources tool to get the available llms.txt file
++ call fetch_docs tool to read it
++ reflect on the urls in llms.txt 
++ reflect on the input question 
++ call fetch_docs on any urls relevant to the question
+</rules>
+```
 
 ![Screenshot 2025-03-18 at 2 05 54 PM](https://github.com/user-attachments/assets/228d96b6-8fb3-4385-8399-3e42fa08b128)
 
@@ -145,6 +171,19 @@ $ /mcp
 ```
 
 ![Screenshot 2025-03-18 at 2 13 49 PM](https://github.com/user-attachments/assets/eb876a0e-27b4-480e-8c37-0f683f878616)
+
+> Note: currently (3/21/25) it appears that Claude Code does not support `rules` for global rules, so appending the following to your prompt.
+
+```
+<rules>
+for ANY question about LangGraph, use the langgraph-docs-mcp server to help answer -- 
++ call list_doc_sources tool to get the available llms.txt file
++ call fetch_docs tool to read it
++ reflect on the urls in llms.txt 
++ reflect on the input question 
++ call fetch_docs on any urls relevant to the question
+</rules>
+```
 
 Then, try the example prompt:
 
