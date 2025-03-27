@@ -6,7 +6,7 @@
 
 [MCP](https://github.com/modelcontextprotocol) offers a way for developers to have *full control* over tools used by these applications. Here, we create [an open source MCP server](https://github.com/modelcontextprotocol) to provide MCP host applications (e.g., Cursor, Windsurf, Claude Code/Desktop) with (1) a user-defined list of `llms.txt` files and (2) a simple  `fetch_docs` tool read URLs within any of the provided `llms.txt` files. This allows the user to audit each tool call as well as the context returned. 
 
-![mcpdoc](https://github.com/user-attachments/assets/736f8f55-833d-4200-b833-5fca01a09e1b)
+<img src="https://github.com/user-attachments/assets/736f8f55-833d-4200-b833-5fca01a09e1b" width="60%">
 
 ## llms-txt
 
