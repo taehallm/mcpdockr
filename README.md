@@ -8,6 +8,17 @@
 
 ![mcpdoc](https://github.com/user-attachments/assets/736f8f55-833d-4200-b833-5fca01a09e1b)
 
+## llms-txt
+
+You can find llms.txt files for langgraph and langchain here:
+
+| Library          | llms.txt                                                                                                   |
+|------------------|------------------------------------------------------------------------------------------------------------|
+| LangGraph Python | [https://langchain-ai.github.io/langgraph/llms.txt](https://langchain-ai.github.io/langgraph/llms.txt)     |
+| LangGraph JS     | [https://langchain-ai.github.io/langgraphjs/llms.txt](https://langchain-ai.github.io/langgraphjs/llms.txt) |
+| LangChain Python | [https://python.langchain.com/llms.txt](https://python.langchain.com/llms.txt)                             |
+| LangChain JS     | [https://js.langchain.com/llms.txt](https://js.langchain.com/llms.txt)                                     |
+
 ## Quickstart
 
 #### Install uv
