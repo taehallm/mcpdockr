@@ -1,5 +1,7 @@
 # MCP LLMS-TXT 문서 서버
 
+*본 저장소는 편의를 위해 LangChain의 [mcpdoc](https://github.com/langchain-ai/mcpdoc)을 한국어로 단순 번역한 저장소입니다.*
+
 ## 개요
 
 [llms.txt](https://llmstxt.org/)는 LLM을 위한 웹사이트 인덱스로, 배경 정보, 가이드, 그리고 상세한 마크다운 파일에 대한 링크를 제공합니다. Cursor, Windsurf와 같은 IDE나 Claude Code/Desktop과 같은 애플리케이션은 `llms.txt`를 사용하여 작업에 필요한 컨텍스트를 검색할 수 있습니다. 하지만 이러한 앱들은 `llms.txt`와 같은 파일을 읽고 처리하기 위해 서로 다른 내장 도구를 사용합니다. 검색 프로세스는 불투명할 수 있으며, 도구 호출이나 반환된 컨텍스트를 감사할 방법이 항상 있는 것은 아닙니다.
