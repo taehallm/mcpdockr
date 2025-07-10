@@ -1,51 +1,52 @@
-# MCP LLMS-TXT Documentation Server
+# MCP LLMS-TXT 문서 서버
 
-## Overview
+## 개요
 
-[llms.txt](https://llmstxt.org/) is a website index for LLMs, providing background information, guidance, and links to detailed markdown files. IDEs like Cursor and Windsurf or apps like Claude Code/Desktop can use `llms.txt` to retrieve context for tasks. However, these apps use different built-in tools to read and process files like `llms.txt`. The retrieval process can be opaque, and there is not always a way to audit the tool calls or the context returned.
+[llms.txt](https://llmstxt.org/)는 LLM을 위한 웹사이트 인덱스로, 배경 정보, 가이드, 그리고 상세한 마크다운 파일에 대한 링크를 제공합니다. Cursor, Windsurf와 같은 IDE나 Claude Code/Desktop과 같은 애플리케이션은 `llms.txt`를 사용하여 작업에 필요한 컨텍스트를 검색할 수 있습니다. 하지만 이러한 앱들은 `llms.txt`와 같은 파일을 읽고 처리하기 위해 서로 다른 내장 도구를 사용합니다. 검색 프로세스는 불투명할 수 있으며, 도구 호출이나 반환된 컨텍스트를 감사할 방법이 항상 있는 것은 아닙니다.
 
-[MCP](https://github.com/modelcontextprotocol) offers a way for developers to have *full control* over tools used by these applications. Here, we create [an open source MCP server](https://github.com/modelcontextprotocol) to provide MCP host applications (e.g., Cursor, Windsurf, Claude Code/Desktop) with (1) a user-defined list of `llms.txt` files and (2) a simple  `fetch_docs` tool read URLs within any of the provided `llms.txt` files. This allows the user to audit each tool call as well as the context returned. 
+[MCP](https://github.com/modelcontextprotocol)는 개발자들이 이러한 애플리케이션에서 사용하는 도구를 *완전히 제어*할 수 있는 방법을 제공합니다. 여기서는 MCP 호스트 애플리케이션(예: Cursor, Windsurf, Claude Code/Desktop)에 (1) 사용자 정의 `llms.txt` 파일 목록과 (2) 제공된 `llms.txt` 파일 내의 URL을 읽을 수 있는 간단한 fetch_docs 도구를 제공하는 [오픈소스 MCP 서버](https://github.com/modelcontextprotocol)를 만듭니다. 이를 통해 사용자는 각 도구 호출과 반환된 컨텍스트를 감사할 수 있습니다.
+
 
 <img src="https://github.com/user-attachments/assets/736f8f55-833d-4200-b833-5fca01a09e1b" width="60%">
 
 ## llms-txt
 
-You can find llms.txt files for langgraph and langchain here:
+langgraph와 langchain의 llms.txt 파일은 다음에서 찾을 수 있습니다:
 
-| Library          | llms.txt                                                                                                   |
+| 라이브러리          | llms.txt                                                                                                   |
 |------------------|------------------------------------------------------------------------------------------------------------|
 | LangGraph Python | [https://langchain-ai.github.io/langgraph/llms.txt](https://langchain-ai.github.io/langgraph/llms.txt)     |
 | LangGraph JS     | [https://langchain-ai.github.io/langgraphjs/llms.txt](https://langchain-ai.github.io/langgraphjs/llms.txt) |
 | LangChain Python | [https://python.langchain.com/llms.txt](https://python.langchain.com/llms.txt)                             |
 | LangChain JS     | [https://js.langchain.com/llms.txt](https://js.langchain.com/llms.txt)                                     |
 
-## Quickstart
+## 시작하기
 
-#### Install uv
-* Please see [official uv docs](https://docs.astral.sh/uv/getting-started/installation/#installation-methods) for other ways to install `uv`.
+#### uv 설치
+* `uv`를 설치하는 다른 방법은 [공식 uv 문서](https://docs.astral.sh/uv/getting-started/installation/#installation-methods)를 참조하세요.
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-#### Choose an `llms.txt` file to use. 
-* For example, [here's](https://langchain-ai.github.io/langgraph/llms.txt) the LangGraph `llms.txt` file.
+#### 사용할 `llms.txt` 파일 선택
+* 예를 들어, [여기](https://langchain-ai.github.io/langgraph/llms.txt)에 LangGraph `llms.txt` 파일이 있습니다.
 
-> **Note: Security and Domain Access Control**
+> **참고: 보안 및 도메인 접근 제어**
 > 
-> For security reasons, mcpdoc implements strict domain access controls:
+> 보안상의 이유로 mcpdoc는 엄격한 도메인 접근 제어를 구현합니다:
 > 
-> 1. **Remote llms.txt files**: When you specify a remote llms.txt URL (e.g., `https://langchain-ai.github.io/langgraph/llms.txt`), mcpdoc automatically adds only that specific domain (`langchain-ai.github.io`) to the allowed domains list. This means the tool can only fetch documentation from URLs on that domain.
+> 1. **원격 llms.txt 파일**: 원격 llms.txt URL(예: `https://langchain-ai.github.io/langgraph/llms.txt`)을 지정하면, mcpdoc는 자동으로 해당 특정 도메인(`langchain-ai.github.io`)만 허용된 도메인 목록에 추가합니다. 이는 도구가 해당 도메인의 URL에서만 문서를 가져올 수 있다는 의미입니다.
 > 
-> 2. **Local llms.txt files**: When using a local file, NO domains are automatically added to the allowed list. You MUST explicitly specify which domains to allow using the `--allowed-domains` parameter.
+> 2. **로컬 llms.txt 파일**: 로컬 파일을 사용할 때는 어떤 도메인도 자동으로 허용 목록에 추가되지 않습니다. `--allowed-domains` 매개변수를 사용하여 허용할 도메인을 명시적으로 지정해야 합니다.
 > 
-> 3. **Adding additional domains**: To allow fetching from domains beyond those automatically included:
->    - Use `--allowed-domains domain1.com domain2.com` to add specific domains
->    - Use `--allowed-domains '*'` to allow all domains (use with caution)
+> 3. **추가 도메인 추가**: 자동으로 포함된 도메인 외에 다른 도메인에서 가져오기를 허용하려면:
+>    - `--allowed-domains domain1.com domain2.com`을 사용하여 특정 도메인 추가
+>    - `--allowed-domains '*'`를 사용하여 모든 도메인 허용 (주의해서 사용)
 > 
-> This security measure prevents unauthorized access to domains not explicitly approved by the user, ensuring that documentation can only be retrieved from trusted sources.
+> 이 보안 조치는 사용자가 명시적으로 승인하지 않은 도메인에 대한 무단 접근을 방지하여, 신뢰할 수 있는 소스에서만 문서를 검색할 수 있도록 보장합니다.
 
-#### (Optional) Test the MCP server locally with your `llms.txt` file(s) of choice:
+#### (선택사항) 선택한 `llms.txt` 파일로 MCP 서버를 로컬에서 테스트:
 ```bash
 uvx --from mcpdoc mcpdoc \
     --urls "LangGraph:https://langchain-ai.github.io/langgraph/llms.txt" "LangChain:https://python.langchain.com/llms.txt" \
@@ -54,27 +55,27 @@ uvx --from mcpdoc mcpdoc \
     --host localhost
 ```
 
-* This should run at: http://localhost:8082
+* 다음 주소에서 실행됩니다: http://localhost:8082
 
 ![Screenshot 2025-03-18 at 3 29 30 PM](https://github.com/user-attachments/assets/24a3d483-cd7a-4c7e-a4f7-893df70e888f)
 
-* Run [MCP inspector](https://modelcontextprotocol.io/docs/tools/inspector) and connect to the running server:
+* [MCP inspector](https://modelcontextprotocol.io/docs/tools/inspector)를 실행하고 실행 중인 서버에 연결합니다:
 ```bash
 npx @modelcontextprotocol/inspector
 ```
 
 ![Screenshot 2025-03-18 at 3 30 30 PM](https://github.com/user-attachments/assets/14645d57-1b52-4a5e-abfe-8e7756772704)
 
-* Here, you can test the `tool` calls. 
+* 여기서 `tool` 호출을 테스트할 수 있습니다.
 
-#### Connect to Cursor 
+#### Cursor에 연결
 
-* Open `Cursor Settings` and `MCP` tab.
-* This will open the `~/.cursor/mcp.json` file.
+* `Cursor 설정`과 `MCP` 탭을 엽니다.
+* `~/.cursor/mcp.json` 파일이 열립니다.
 
 ![Screenshot 2025-03-19 at 11 01 31 AM](https://github.com/user-attachments/assets/3d1c8eb3-4d40-487f-8bad-3f9e660f770a)
 
-* Paste the following into the file (we use the `langgraph-docs-mcp` name and link to the LangGraph `llms.txt`).
+* 다음 내용을 파일에 붙여넣습니다 (`langgraph-docs-mcp` 이름을 사용하고 LangGraph `llms.txt`에 링크합니다).
 
 ```
 {
@@ -95,9 +96,9 @@ npx @modelcontextprotocol/inspector
 }
 ```
 
-* Confirm that the server is running in your `Cursor Settings/MCP` tab.
-* Best practice is to then update Cursor Global (User) rules.
-* Open Cursor `Settings/Rules` and update `User Rules` with the following (or similar):
+* `Cursor Settings/MCP` 탭에서 서버가 실행 중인지 확인합니다.
+* 모범 사례는 Cursor Global (User) 규칙을 업데이트하는 것입니다.
+* Cursor `Settings/Rules`을 열고 다음과 같이 `User Rules`을 업데이트합니다:
 
 ```
 for ANY question about LangGraph, use the langgraph-docs-mcp server to help answer -- 
@@ -109,27 +110,27 @@ for ANY question about LangGraph, use the langgraph-docs-mcp server to help answ
 + use this to answer the question
 ```
 
-* `CMD+L` (on Mac) to open chat.
-* Ensure `agent` is selected. 
+* `CMD+L` (Mac에서)로 채팅을 엽니다.
+* `agent`가 선택되어 있는지 확인합니다.
 
 ![Screenshot 2025-03-18 at 1 56 54 PM](https://github.com/user-attachments/assets/0dd747d0-7ec0-43d2-b6ef-cdcf5a2a30bf)
 
-Then, try an example prompt, such as:
+그런 다음 다음과 같은 예시 프롬프트를 시도해보세요:
 ```
 what are types of memory in LangGraph?
 ```
 
 ![Screenshot 2025-03-18 at 1 58 38 PM](https://github.com/user-attachments/assets/180966b5-ab03-4b78-8b5d-bab43f5954ed)
 
-### Connect to Windsurf
+### Windsurf에 연결
 
-* Open Cascade with `CMD+L` (on Mac).
-* Click `Configure MCP` to open the config file, `~/.codeium/windsurf/mcp_config.json`.
-* Update with `langgraph-docs-mcp` as noted above.
+* `CMD+L` (Mac에서)로 Cascade를 엽니다.
+* `Configure MCP`를 클릭하여 설정 파일 `~/.codeium/windsurf/mcp_config.json`을 엽니다.
+* 위에서 언급한 대로 `langgraph-docs-mcp`로 업데이트합니다.
 
 ![Screenshot 2025-03-19 at 11 02 52 AM](https://github.com/user-attachments/assets/d45b427c-1c1e-4602-820a-7161a310af24)
 
-* Update `Windsurf Rules/Global rules` with the following (or similar):
+* `Windsurf Rules/Global rules`을 다음과 같이 업데이트합니다:
 
 ```
 for ANY question about LangGraph, use the langgraph-docs-mcp server to help answer -- 
@@ -142,22 +143,22 @@ for ANY question about LangGraph, use the langgraph-docs-mcp server to help answ
 
 ![Screenshot 2025-03-18 at 2 02 12 PM](https://github.com/user-attachments/assets/5a29bd6a-ad9a-4c4a-a4d5-262c914c5276)
 
-Then, try the example prompt:
-* It will perform your tool calls.
+그런 다음 예시 프롬프트를 시도하세요:
+* 도구 호출을 수행하는 것을 확인할 수 있습니다.
 
 ![Screenshot 2025-03-18 at 2 03 07 PM](https://github.com/user-attachments/assets/0e24e1b2-dc94-4153-b4fa-495fd768125b)
 
-### Connect to Claude Desktop
+### Claude Desktop에 연결
 
-* Open `Settings/Developer` to update `~/Library/Application\ Support/Claude/claude_desktop_config.json`.
-* Update with `langgraph-docs-mcp` as noted above.
-* Restart Claude Desktop app.
+* `Settings/Developer`를 열어 `~/Library/Application\ Support/Claude/claude_desktop_config.json`을 업데이트합니다.
+* 위에서 언급한 대로 `langgraph-docs-mcp`로 업데이트합니다.
+* Claude Desktop 앱을 다시 시작합니다.
 
 > [!Note]
-> If you run into issues with Python version incompatibility when trying to add MCPDoc tools to Claude Desktop, you can explicitly specify the filepath to `python` executable in the `uvx` command.
+> Claude Desktop에 MCPDoc 도구를 추가하려고 할 때 Python 버전 비호환성 문제가 발생하면, `uvx` 명령에서 `python` 실행 파일의 경로를 명시적으로 지정할 수 있습니다.
 >
 > <details>
-> <summary>Example configuration</summary>
+> <summary>예시 구성</summary>
 >
 > ```
 > {
@@ -182,7 +183,7 @@ Then, try the example prompt:
 > </details>
 
 > [!Note]
-> Currently (3/21/25) it appears that Claude Desktop does not support `rules` for global rules, so appending the following to your prompt.
+> 현재 (2025/3/21) Claude Desktop은 전역 규칙을 위한 `rules`를 지원하지 않는 것으로 보이므로, 프롬프트에 다음을 추가하세요.
 
 ```
 <rules>
@@ -197,24 +198,24 @@ for ANY question about LangGraph, use the langgraph-docs-mcp server to help answ
 
 ![Screenshot 2025-03-18 at 2 05 54 PM](https://github.com/user-attachments/assets/228d96b6-8fb3-4385-8399-3e42fa08b128)
 
-* You will see your tools visible in the bottom right of your chat input.
+* 채팅 입력 하단 오른쪽에 도구가 표시됩니다.
 
 ![Screenshot 2025-03-18 at 2 05 39 PM](https://github.com/user-attachments/assets/71f3c507-91b2-4fa7-9bd1-ac9cbed73cfb)
 
-Then, try the example prompt:
+그런 다음 예시 프롬프트를 시도하세요:
 
-* It will ask to approve tool calls as it processes your request.
+* 요청을 처리하는 동안 도구 호출 승인을 요청합니다.
 
 ![Screenshot 2025-03-18 at 2 06 54 PM](https://github.com/user-attachments/assets/59b3a010-94fa-4a4d-b650-5cd449afeec0)
 
-### Connect to Claude Code
+### Claude Code에 연결
 
-* In a terminal after installing [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview), run this command to add the MCP server to your project:
+* [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)를 설치한 후 터미널에서 다음 명령을 실행하여 프로젝트에 MCP 서버를 추가합니다:
 ```
 claude mcp add-json langgraph-docs '{"type":"stdio","command":"uvx" ,"args":["--from", "mcpdoc", "mcpdoc", "--urls", "langgraph:https://langchain-ai.github.io/langgraph/llms.txt", "LangChain:https://python.langchain.com/llms.txt"]}' -s local
 ```
-* You will see `~/.claude.json` updated.
-* Test by launching Claude Code and running to view your tools:
+* `~/.claude.json`이 업데이트된 것을 확인할 수 있습니다.
+* Claude Code를 실행하고 다음을 실행하여 도구를 확인하여 테스트합니다:
 ```
 $ Claude
 $ /mcp 
@@ -223,7 +224,7 @@ $ /mcp
 ![Screenshot 2025-03-18 at 2 13 49 PM](https://github.com/user-attachments/assets/eb876a0e-27b4-480e-8c37-0f683f878616)
 
 > [!Note]
-> Currently (3/21/25) it appears that Claude Code does not support `rules` for global rules, so appending the following to your prompt.
+> 현재 (2025/3/21) Claude Code는 전역 규칙을 위한 `rules`를 지원하지 않는 것으로 보이므로, 프롬프트에 다음을 추가하세요.
 
 ```
 <rules>
@@ -236,79 +237,79 @@ for ANY question about LangGraph, use the langgraph-docs-mcp server to help answ
 </rules>
 ```
 
-Then, try the example prompt:
+그런 다음 예시 프롬프트를 시도하세요:
 
-* It will ask to approve tool calls.
+* 도구 호출 승인을 요청합니다.
 
 ![Screenshot 2025-03-18 at 2 14 37 PM](https://github.com/user-attachments/assets/5b9a2938-ea69-4443-8d3b-09061faccad0)
 
-## Command-line Interface
+## Command-line Interface (CLI)
 
-The `mcpdoc` command provides a simple CLI for launching the documentation server. 
+`mcpdoc` 명령은 문서 서버를 시작하기 위한 간단한 CLI를 제공합니다.
 
-You can specify documentation sources in three ways, and these can be combined:
+세 가지 방법으로 문서 소스를 지정할 수 있으며, 이들을 조합할 수 있습니다:
 
-1. Using a YAML config file:
+1. YAML 설정 파일 사용:
 
-* This will load the LangGraph Python documentation from the `sample_config.yaml` file in this repo.
+* 본 저장소의 `sample_config.yaml` 파일에서 LangGraph Python 문서를 로드합니다.
 
 ```bash
 mcpdoc --yaml sample_config.yaml
 ```
 
-2. Using a JSON config file:
+2. JSON 설정 파일 사용:
 
-* This will load the LangGraph Python documentation from the `sample_config.json` file in this repo.
+* 본 저장소의 `sample_config.json` 파일에서 LangGraph Python 문서를 로드합니다.
 
 ```bash
 mcpdoc --json sample_config.json
 ```
 
-3. Directly specifying llms.txt URLs with optional names:
+3. llms.txt URL을 선택적 이름과 함께 직접 지정:
 
-* URLs can be specified either as plain URLs or with optional names using the format `name:url`.
-* You can specify multiple URLs by using the `--urls` parameter multiple times.
-* This is how we loaded `llms.txt` for the MCP server above.
+* URL은 일반 URL 또는 `name:url` 형식으로 선택적 이름과 함께 지정할 수 있습니다.
+* `--urls` 매개변수를 여러 번 사용하여 여러 URL을 지정할 수 있습니다.
+* 위에서 MCP 서버에 `llms.txt`를 로드한 방법입니다.
 
 ```bash
 mcpdoc --urls LangGraph:https://langchain-ai.github.io/langgraph/llms.txt --urls LangChain:https://python.langchain.com/llms.txt
 ```
 
-You can also combine these methods to merge documentation sources:
+이러한 방법들을 조합하여 문서 소스를 병합할 수도 있습니다:
 
 ```bash
 mcpdoc --yaml sample_config.yaml --json sample_config.json --urls LangGraph:https://langchain-ai.github.io/langgraph/llms.txt --urls LangChain:https://python.langchain.com/llms.txt
 ```
 
-## Additional Options
+## 추가 옵션
 
-- `--follow-redirects`: Follow HTTP redirects (defaults to False)
-- `--timeout SECONDS`: HTTP request timeout in seconds (defaults to 10.0)
+- `--follow-redirects`: HTTP 리디렉션 따르기 (기본값은 False)
+- `--timeout SECONDS`: HTTP 요청 타임아웃(초) (기본값은 10.0)
 
-Example with additional options:
+추가 옵션이 포함된 예시:
 
 ```bash
 mcpdoc --yaml sample_config.yaml --follow-redirects --timeout 15
 ```
 
-This will load the LangGraph Python documentation with a 15-second timeout and follow any HTTP redirects if necessary.
+이는 15초 타임아웃으로 LangGraph Python 문서를 로드하고 필요한 경우 HTTP 리디렉션을 따릅니다.
 
-## Configuration Format
+## 구성 형식
 
-Both YAML and JSON configuration files should contain a list of documentation sources. 
+YAML과 JSON 구성 파일 모두 문서 소스 목록을 포함해야 합니다.
 
-Each source must include an `llms_txt` URL and can optionally include a `name`:
+각 소스는 `llms_txt` URL을 포함해야 하며 선택적으로 `name`을 포함할 수 있습니다:
 
-### YAML Configuration Example (sample_config.yaml)
+### YAML 구성 예시 (sample_config.yaml)
 
 ```yaml
-# Sample configuration for mcp-mcpdoc server
-# Each entry must have a llms_txt URL and optionally a name
+# mcp-mcpdoc 서버용 샘플 구성
+# 각 항목은 llms_txt URL을 가져야 하며 선택적으로 이름을 가질 수 있습니다
 - name: LangGraph Python
   llms_txt: https://langchain-ai.github.io/langgraph/llms.txt
 ```
 
-### JSON Configuration Example (sample_config.json)
+### JSON 구성 예시 (sample_config.json)
 
 ```json
 [
@@ -319,19 +320,19 @@ Each source must include an `llms_txt` URL and can optionally include a `name`:
 ]
 ```
 
-## Programmatic Usage
+## 프로그래밍 방식 사용
 
 ```python
 from mcpdoc.main import create_server
 
-# Create a server with documentation sources
+# 문서 소스로 서버 생성
 server = create_server(
     [
         {
             "name": "LangGraph Python",
             "llms_txt": "https://langchain-ai.github.io/langgraph/llms.txt",
         },
-        # You can add multiple documentation sources
+        # 여러 문서 소스를 추가할 수 있습니다
         # {
         #     "name": "Another Documentation",
         #     "llms_txt": "https://example.com/llms.txt",
@@ -341,6 +342,6 @@ server = create_server(
     timeout=15.0,
 )
 
-# Run the server
+# 서버 실행
 server.run(transport="stdio")
 ```
